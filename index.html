@@ -70,7 +70,7 @@
   .field{margin-bottom:14px;}
   .field label{display:block; font-size:12px; font-weight:600; color:var(--ink); margin:0 0 6px;}
   .field label .opt{color:var(--ink-soft); font-weight:400; text-transform:none; letter-spacing:0;}
-  input[type=email], input[type=text], select{
+  input[type=email], input[type=text], input[type=number], select{
     width:100%; padding:11px 13px; font:inherit; font-size:15px; color:var(--ink);
     background:#FBFCFC; border:1px solid var(--line); border-radius:9px; transition:border-color .15s, box-shadow .15s;
   }
@@ -115,6 +115,41 @@
   .strip .items span::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
     width:8px; height:8px; border-radius:50%; background:var(--sun);}
   .strip .note{font-size:12.5px; color:#E4EBF2; max-width:40ch;}
+
+  /* ---------- Calculator ---------- */
+  .calc{padding:36px 0 8px;}
+  .calc-card{max-width:620px; margin:0 auto; background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; padding:28px 26px 26px; box-shadow:var(--shadow);}
+  .calc-card h4{font-family:"Barlow Condensed",sans-serif; font-size:22px; margin:0 0 6px;}
+  .calc-card .sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 18px;}
+  .steps{display:flex; gap:6px; justify-content:center; margin:0 0 22px;}
+  .steps i{width:36px; height:4px; border-radius:2px; background:var(--line); transition:background .2s;}
+  .steps i.on{background:var(--sun);}
+  .cstep{display:none;}
+  .cstep.on{display:block;}
+  .copt{display:block; width:100%; text-align:left; padding:13px 14px; margin:0 0 10px; font:inherit; font-size:15px;
+    color:var(--ink); background:#FBFCFC; border:1px solid var(--line); border-radius:9px; cursor:pointer; transition:border-color .15s, box-shadow .15s;}
+  .copt:hover{border-color:var(--sun-deep);}
+  .copt.sel{border-color:var(--sun-deep); box-shadow:0 0 0 2px rgba(153,204,51,.35);}
+  .copt small{display:block; color:var(--ink-soft); font-size:12.5px;}
+  .quick{display:flex; gap:8px; margin:10px 0 0; flex-wrap:wrap;}
+  .quick button{font:inherit; font-size:12.5px; padding:6px 12px; border-radius:20px; border:1px solid var(--line);
+    background:#FBFCFC; color:var(--ink-soft); cursor:pointer;}
+  .quick button:hover{border-color:var(--sun-deep); color:var(--ink);}
+  .calc-nav{display:flex; gap:10px; margin-top:18px;}
+  .btn-back{flex:0 0 auto; padding:13px 18px; font:inherit; font-size:14px; color:var(--ink-soft);
+    background:none; border:1px solid var(--line); border-radius:9px; cursor:pointer;}
+  .btn-back:hover{border-color:var(--ink-soft);}
+  .calc-nav .btn{flex:1;}
+  .cerr{display:none; font-size:12.5px; color:#B4321A; margin:8px 0 0; font-weight:500;}
+  .bigres{text-align:center; background:rgba(153,204,51,.14); border:1px solid rgba(153,204,51,.4);
+    border-radius:12px; padding:16px 14px; margin:0 0 14px;}
+  .bigres .n{font-family:"Barlow Condensed",sans-serif; font-size:34px; font-weight:700; color:var(--ink); line-height:1.1;}
+  .bigres .l{font-size:12.5px; color:var(--ink-soft);}
+  .lockrow{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 13px;
+    border:1px dashed var(--line); border-radius:9px; margin:0 0 8px; font-size:13.5px; color:var(--ink-soft);}
+  .lockrow .val{filter:blur(6px); user-select:none; font-weight:600; color:var(--ink);}
+  .lockrow .lock{flex:0 0 auto; font-size:14px;}
 
   /* ---------- Footer ---------- */
   footer{padding:34px 0 46px; text-align:center;}
@@ -247,6 +282,87 @@
         </div>
       </div>
     </section>
+
+    <!-- ---------- Calculator energie ---------- -->
+    <section class="calc" id="calculator">
+      <div class="wrap">
+        <div class="value-head">
+          <span class="k mono">Gratuit</span>
+          <h3>Calculator sistem fotovoltaic + stocare</h3>
+        </div>
+        <div class="calc-card">
+          <div class="steps"><i class="on" id="st1"></i><i id="st2"></i><i id="st3"></i></div>
+
+          <!-- Pas 1: consum -->
+          <div class="cstep on" id="cs1">
+            <h4>Cât curent consumi lunar?</h4>
+            <p class="sub">Găsești consumul în kWh pe factura de energie.</p>
+            <input type="number" id="ckwh" min="30" max="20000" placeholder="ex. 250 (kWh/lună)" inputmode="numeric" />
+            <div class="quick">
+              <button type="button" data-k="150">~150 kWh</button>
+              <button type="button" data-k="250">~250 kWh</button>
+              <button type="button" data-k="400">~400 kWh</button>
+              <button type="button" data-k="600">~600 kWh</button>
+            </div>
+            <p class="cerr" id="cerr1">Introdu un consum între 30 și 20.000 kWh.</p>
+            <div class="calc-nav"><button type="button" class="btn" id="cnext1">Continuă</button></div>
+          </div>
+
+          <!-- Pas 2: tip locuință -->
+          <div class="cstep" id="cs2">
+            <h4>Ce tip de locuință ai?</h4>
+            <p class="sub">Ne ajută să estimăm spațiul disponibil pentru panouri.</p>
+            <button type="button" class="copt" data-h="ap">Apartament<small>Balcon sau acoperiș comun</small></button>
+            <button type="button" class="copt" data-h="mica">Casă mică<small>Sub 100 mp</small></button>
+            <button type="button" class="copt" data-h="medie">Casă medie<small>100–200 mp</small></button>
+            <button type="button" class="copt" data-h="mare">Casă mare / pensiune / sediu firmă<small>Peste 200 mp</small></button>
+            <p class="cerr" id="cerr2">Alege o variantă ca să continui.</p>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback2">Înapoi</button><button type="button" class="btn" id="cnext2">Continuă</button></div>
+          </div>
+
+          <!-- Pas 3: autonomie -->
+          <div class="cstep" id="cs3">
+            <h4>Cât timp dorești autonomie?</h4>
+            <p class="sub">Cât să funcționeze casa din baterie, fără rețea.</p>
+            <button type="button" class="copt" data-a="0">Fără baterie<small>Doar producție pe timp de zi</small></button>
+            <button type="button" class="copt" data-a="6">4–8 ore<small>Acoperă seara și vârfurile de consum</small></button>
+            <button type="button" class="copt" data-a="12">12 ore<small>Seara + noaptea</small></button>
+            <button type="button" class="copt" data-a="24">24 de ore<small>Autonomie completă o zi</small></button>
+            <p class="cerr" id="cerr3">Alege o variantă ca să continui.</p>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback3">Înapoi</button><button type="button" class="btn" id="ccalc">Calculează</button></div>
+          </div>
+
+          <!-- Pre-rezultat + email -->
+          <div class="cstep" id="cs4">
+            <h4>Rezultatul tău preliminar</h4>
+            <p class="sub">Pe baza consumului și a locuinței tale:</p>
+            <div class="bigres"><div class="n" id="reskwp">— kWp</div><div class="l" id="respan">sistem recomandat</div></div>
+            <div class="lockrow"><span>Baterie recomandată</span><span class="val" id="resbat">10,5 kWh</span><span class="lock">🔒</span></div>
+            <div class="lockrow"><span>Producție anuală estimată</span><span class="val">6.200 kWh</span><span class="lock">🔒</span></div>
+            <div class="lockrow"><span>Economie estimată la factură</span><span class="val">8.000 lei/an</span><span class="lock">🔒</span></div>
+            <p class="sub" style="margin:14px 0 10px;">Primești raportul complet pe email — deblochezi bateria recomandată, producția și economia estimată.</p>
+            <input type="email" id="cemail" placeholder="nume@firma.ro" autocomplete="email" />
+            <label class="consent" for="cconsent" style="margin:12px 0 4px;">
+              <input type="checkbox" id="cconsent" />
+              <span>Sunt de acord să primesc raportul și buletinul <strong>HYTECH</strong> cu noutăți și oferte pentru parteneri. <a href="#politica">Politica de confidențialitate</a>. Mă pot dezabona oricând.</span>
+            </label>
+            <p class="cerr" id="cerr4">Completează un email valid și bifează acordul.</p>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback4">Înapoi</button><button type="button" class="btn" id="csend">Trimite-mi raportul complet</button></div>
+          </div>
+
+          <!-- Confirmare -->
+          <div class="cstep" id="cs5">
+            <div class="done" style="display:block;">
+              <div class="mark" aria-hidden="true">✓</div>
+              <h2>Raportul e pe drum</h2>
+              <p>Verifică-ți emailul — primești dimensionarea completă: baterie, producție anuală și economia estimată. (Uită-te și în Spam/Promoții.)</p>
+            </div>
+          </div>
+
+          <p class="micro" style="margin-top:14px;">Estimare orientativă, pe baza mediilor din România. Dimensionarea exactă se face după un audit al locației.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -279,6 +395,74 @@
     // TODO: aici trimiți datele către platforma ta de email.
     form.style.display = 'none';
     document.getElementById('done').style.display = 'block';
+  });
+
+  /* ---------- Calculator energie ---------- */
+  var calc = {kwh:0, home:'', aut:-1};
+  var caps = {ap:3, mica:6, medie:10, mare:20};
+
+  function cshow(n){
+    for(var i=1;i<=5;i++){ document.getElementById('cs'+i).classList.toggle('on', i===n); }
+    for(var j=1;j<=3;j++){ var d=document.getElementById('st'+j); if(d) d.classList.toggle('on', j<=Math.min(n,3)); }
+  }
+  function cerr(id, show){ document.getElementById(id).style.display = show?'block':'none'; }
+
+  // Pas 1
+  document.querySelectorAll('#cs1 .quick button').forEach(function(b){
+    b.addEventListener('click', function(){ document.getElementById('ckwh').value = this.dataset.k; });
+  });
+  document.getElementById('cnext1').addEventListener('click', function(){
+    var v = parseFloat(document.getElementById('ckwh').value);
+    if(!v || v<30 || v>20000){ cerr('cerr1', true); return; }
+    calc.kwh = v; cerr('cerr1', false); cshow(2);
+  });
+
+  // Pas 2 și 3: selecție opțiuni
+  function pick(stepSel, attr, cb){
+    document.querySelectorAll(stepSel+' .copt').forEach(function(b){
+      b.addEventListener('click', function(){
+        document.querySelectorAll(stepSel+' .copt').forEach(function(x){ x.classList.remove('sel'); });
+        this.classList.add('sel'); cb(this.dataset[attr]);
+      });
+    });
+  }
+  pick('#cs2','h',function(v){ calc.home = v; });
+  pick('#cs3','a',function(v){ calc.aut = parseFloat(v); });
+
+  document.getElementById('cback2').addEventListener('click', function(){ cshow(1); });
+  document.getElementById('cnext2').addEventListener('click', function(){
+    if(!calc.home){ cerr('cerr2', true); return; }
+    cerr('cerr2', false); cshow(3);
+  });
+  document.getElementById('cback3').addEventListener('click', function(){ cshow(2); });
+  document.getElementById('ccalc').addEventListener('click', function(){
+    if(calc.aut<0){ cerr('cerr3', true); return; }
+    cerr('cerr3', false);
+    // Dimensionare orientativă: ~100 kWh/lună per kWp instalat (medie RO)
+    var kwp = Math.min(caps[calc.home], Math.max(1.5, Math.round(calc.kwh/100*2)/2));
+    var panels = Math.ceil(kwp*1000/440);
+    var daily = calc.kwh/30;
+    var batt = calc.aut===0 ? 0 : Math.max(5, Math.round(daily*calc.aut/24*2)/2);
+    var prod = Math.round(kwp*1200);
+    var save = Math.round(prod*1.3);
+    calc.res = {kwp:kwp, panels:panels, batt:batt, prod:prod, save:save};
+    document.getElementById('reskwp').textContent = String(kwp).replace('.',',')+' kWp';
+    document.getElementById('respan').textContent = 'sistem recomandat · aproximativ '+panels+' panouri de 440W';
+    document.getElementById('resbat').textContent = (batt===0?'—':String(batt).replace('.',',')+' kWh');
+    cshow(4);
+  });
+  document.getElementById('cback4').addEventListener('click', function(){ cshow(3); });
+
+  // Email + consimțământ
+  document.getElementById('csend').addEventListener('click', function(){
+    var em = document.getElementById('cemail').value.trim();
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+    var cons = document.getElementById('cconsent').checked;
+    if(!ok || !cons){ cerr('cerr4', true); return; }
+    cerr('cerr4', false);
+    // TODO: trimite {email: em, consum: calc.kwh, locuinta: calc.home, autonomie: calc.aut,
+    //        rezultat: calc.res} către platforma de email (Brevo) — listă + atribut CALCULATOR.
+    cshow(5);
   });
 </script>
 </body>
