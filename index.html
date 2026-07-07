@@ -19,7 +19,7 @@
 <title>Abonare buletin fotovoltaic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#EFF3F7; --surface:#FFFFFF; --ink:#00284D; --ink-soft:#3D5A75;
@@ -30,7 +30,7 @@
   html{scroll-behavior:smooth;}
   body{
     margin:0; background:var(--bg); color:var(--ink);
-    font-family:"IBM Plex Sans",system-ui,sans-serif; line-height:1.55;
+    font-family:"Barlow",system-ui,sans-serif; line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
@@ -45,10 +45,12 @@
     pointer-events:none; z-index:0;
   }
   .hero .wrap{position:relative; z-index:1;}
+  .logo{height:48px; width:auto; display:block; margin:0 0 26px;}
+  .logo-foot{height:30px; width:auto; display:inline-block; margin:0 0 10px;}
   .eyebrow{font-size:12px; color:var(--sun-deep); font-weight:600; margin:0 0 18px;}
   .hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:start;}
   h1{
-    font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:clamp(32px,5vw,52px);
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:clamp(32px,5vw,52px);
     line-height:1.04; letter-spacing:-.02em; margin:0 0 20px;
   }
   h1 .accent{color:var(--sun-deep);}
@@ -63,7 +65,7 @@
     background:var(--surface); border:1px solid var(--line); border-radius:14px;
     padding:26px 24px 24px; box-shadow:var(--shadow);
   }
-  .card h2{font-family:"Space Grotesk",sans-serif; font-size:21px; margin:0 0 4px; letter-spacing:-.01em;}
+  .card h2{font-family:"Barlow Condensed",sans-serif; font-size:21px; margin:0 0 4px; letter-spacing:-.01em;}
   .card .sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 20px;}
   .field{margin-bottom:14px;}
   .field label{display:block; font-size:12px; font-weight:600; color:var(--ink); margin:0 0 6px;}
@@ -77,7 +79,7 @@
   .consent input{margin-top:2px; width:16px; height:16px; accent-color:var(--teal); flex:0 0 auto;}
   .consent a{color:var(--teal); text-decoration:underline; text-underline-offset:2px;}
   .btn{
-    width:100%; padding:13px 16px; font-family:"Space Grotesk",sans-serif; font-size:16px; font-weight:600;
+    width:100%; padding:13px 16px; font-family:"Barlow Condensed",sans-serif; font-size:16px; font-weight:600;
     color:#00284D; background:var(--sun); border:none; border-radius:9px; cursor:pointer;
     transition:background .15s, transform .05s;
   }
@@ -90,19 +92,19 @@
   .done{display:none; text-align:center; padding:14px 4px;}
   .done .mark{width:52px; height:52px; border-radius:50%; background:rgba(153,204,51,.20); color:var(--teal);
     display:grid; place-items:center; margin:6px auto 14px; font-size:26px;}
-  .done h2{font-family:"Space Grotesk",sans-serif; font-size:20px; margin:0 0 8px;}
+  .done h2{font-family:"Barlow Condensed",sans-serif; font-size:20px; margin:0 0 8px;}
   .done p{font-size:13.5px; color:var(--ink-soft); margin:0 auto; max-width:32ch;}
 
   /* ---------- Value section ---------- */
   .value{padding:20px 0 8px;}
   .value-head{display:flex; align-items:baseline; gap:14px; margin:0 0 22px;}
   .value-head .k{font-size:11px; color:var(--sun-deep); font-weight:600;}
-  .value-head h3{font-family:"Space Grotesk",sans-serif; font-size:22px; margin:0; letter-spacing:-.01em;}
+  .value-head h3{font-family:"Barlow Condensed",sans-serif; font-size:22px; margin:0; letter-spacing:-.01em;}
   .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
   .vcard{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 17px;}
   .vcard .tag{font-size:10.5px; font-weight:600; color:var(--teal); margin:0 0 10px; display:inline-block;
     border:1px solid rgba(0,40,77,.28); padding:3px 8px; border-radius:20px;}
-  .vcard h4{font-family:"Space Grotesk",sans-serif; font-size:16px; margin:0 0 6px;}
+  .vcard h4{font-family:"Barlow Condensed",sans-serif; font-size:16px; margin:0 0 6px;}
   .vcard p{font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5;}
 
   /* ---------- Reassure strip ---------- */
@@ -138,6 +140,7 @@
 
   <header class="hero">
     <div class="wrap">
+      <img src="logo%20hytech%20png%206b.png" alt="HYTECH" class="logo" />
       <p class="eyebrow mono">Buletin pentru instalatori fotovoltaici</p>
       <div class="hero-grid">
         <div>
@@ -185,7 +188,7 @@
             <!-- Consimțământ: NEBIFAT implicit (obligatoriu pentru consimțământ valid) -->
             <label class="consent" for="consent">
               <input type="checkbox" id="consent" name="consent" required />
-              <span>Sunt de acord să primesc buletinul <strong>[Firma ta]</strong> cu noutăți despre finanțare, reglementări ANRE și piața fotovoltaică. Am citit <a href="#politica">Politica de confidențialitate</a>. Mă pot dezabona oricând.</span>
+              <span>Sunt de acord să primesc buletinul <strong>HYTECH</strong> cu noutăți despre finanțare, reglementări ANRE și piața fotovoltaică, precum și oferte HYTECH personalizate, speciale pentru parteneri. Am citit <a href="#politica">Politica de confidențialitate</a>. Mă pot dezabona oricând.</span>
             </label>
 
             <button type="submit" class="btn">Mă abonez</button>
@@ -248,7 +251,8 @@
 
   <footer>
     <div class="wrap">
-      <p>© <span id="yr"></span> [Firma ta] · <a href="#politica">Politica de confidențialitate</a></p>
+      <img src="logo%20hytech%20png%206b.png" alt="HYTECH" class="logo-foot" />
+      <p>© <span id="yr"></span> HYTECH · <a href="#politica">Politica de confidențialitate</a></p>
       <p>Te-ai abonat din greșeală? <a href="#dezabonare">Dezabonează-te aici</a>.</p>
     </div>
   </footer>
