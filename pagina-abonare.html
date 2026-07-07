@@ -1,0 +1,281 @@
+<!--
+  PAGINĂ DE ABONARE — buletin pentru instalatori fotovoltaici
+  Model conform (opt-in cu confirmare / double opt-in).
+
+  ÎNAINTE DE PUBLICARE, înlocuiește:
+   1) [Firma ta]            -> numele firmei tale (apare în consimțământ + footer)
+   2) href="#politica"      -> linkul real către Politica ta de confidențialitate
+   3) <form action="#">     -> endpoint-ul / embed-ul de la platforma ta de email
+                               (Brevo, MailerLite, Mailchimp etc.), care trimite
+                               automat emailul de CONFIRMARE (double opt-in).
+  Fără platforma de email conectată, formularul de mai jos doar simulează trimiterea
+  (afișează mesajul de confirmare) — util pentru previzualizare.
+-->
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abonare buletin fotovoltaic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF1F0; --surface:#FFFFFF; --ink:#14202E; --ink-soft:#4A5A67;
+    --sun:#F5A61E; --sun-deep:#E0871A; --teal:#0E766B; --line:#D5DEDB;
+    --shadow:0 1px 2px rgba(20,32,46,.06),0 10px 30px rgba(20,32,46,.08);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  .mono{font-family:"IBM Plex Mono",monospace; letter-spacing:.08em; text-transform:uppercase;}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative; padding:64px 0 40px; overflow:hidden;}
+  .hero::before{ /* sun arc — the signature */
+    content:""; position:absolute; top:-140px; left:50%; transform:translateX(-50%);
+    width:760px; height:760px; border-radius:50%;
+    background:radial-gradient(circle at 50% 42%, rgba(245,166,30,.28), rgba(245,166,30,.06) 42%, transparent 62%);
+    pointer-events:none; z-index:0;
+  }
+  .hero .wrap{position:relative; z-index:1;}
+  .eyebrow{font-size:12px; color:var(--sun-deep); font-weight:600; margin:0 0 18px;}
+  .hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:start;}
+  h1{
+    font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:clamp(32px,5vw,52px);
+    line-height:1.04; letter-spacing:-.02em; margin:0 0 20px;
+  }
+  h1 .accent{color:var(--sun-deep);}
+  .lede{font-size:clamp(16px,1.4vw,19px); color:var(--ink-soft); max-width:34ch; margin:0 0 28px;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px 18px; font-size:12px; color:var(--ink-soft);}
+  .chips span{position:relative; padding-left:16px;}
+  .chips span::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:7px; height:7px; border-radius:2px; background:var(--sun);}
+
+  /* ---------- Form card ---------- */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:26px 24px 24px; box-shadow:var(--shadow);
+  }
+  .card h2{font-family:"Space Grotesk",sans-serif; font-size:21px; margin:0 0 4px; letter-spacing:-.01em;}
+  .card .sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12px; font-weight:600; color:var(--ink); margin:0 0 6px;}
+  .field label .opt{color:var(--ink-soft); font-weight:400; text-transform:none; letter-spacing:0;}
+  input[type=email], input[type=text], select{
+    width:100%; padding:11px 13px; font:inherit; font-size:15px; color:var(--ink);
+    background:#FBFCFC; border:1px solid var(--line); border-radius:9px; transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus{outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(14,118,107,.15);}
+  .consent{display:flex; gap:10px; align-items:flex-start; margin:16px 0 18px; font-size:12.5px; color:var(--ink-soft); line-height:1.45;}
+  .consent input{margin-top:2px; width:16px; height:16px; accent-color:var(--teal); flex:0 0 auto;}
+  .consent a{color:var(--teal); text-decoration:underline; text-underline-offset:2px;}
+  .btn{
+    width:100%; padding:13px 16px; font-family:"Space Grotesk",sans-serif; font-size:16px; font-weight:600;
+    color:#1B1200; background:var(--sun); border:none; border-radius:9px; cursor:pointer;
+    transition:background .15s, transform .05s;
+  }
+  .btn:hover{background:var(--sun-deep);}
+  .btn:active{transform:translateY(1px);}
+  .btn:focus-visible{outline:3px solid rgba(14,118,107,.5); outline-offset:2px;}
+  .micro{font-size:11.5px; color:var(--ink-soft); margin:12px 0 0; line-height:1.5;}
+  .formerr{display:none; font-size:12.5px; color:#B4321A; margin:10px 0 0; font-weight:500;}
+  /* success state */
+  .done{display:none; text-align:center; padding:14px 4px;}
+  .done .mark{width:52px; height:52px; border-radius:50%; background:rgba(14,118,107,.12); color:var(--teal);
+    display:grid; place-items:center; margin:6px auto 14px; font-size:26px;}
+  .done h2{font-family:"Space Grotesk",sans-serif; font-size:20px; margin:0 0 8px;}
+  .done p{font-size:13.5px; color:var(--ink-soft); margin:0 auto; max-width:32ch;}
+
+  /* ---------- Value section ---------- */
+  .value{padding:20px 0 8px;}
+  .value-head{display:flex; align-items:baseline; gap:14px; margin:0 0 22px;}
+  .value-head .k{font-size:11px; color:var(--sun-deep); font-weight:600;}
+  .value-head h3{font-family:"Space Grotesk",sans-serif; font-size:22px; margin:0; letter-spacing:-.01em;}
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  .vcard{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 17px;}
+  .vcard .tag{font-size:10.5px; font-weight:600; color:var(--teal); margin:0 0 10px; display:inline-block;
+    border:1px solid rgba(14,118,107,.28); padding:3px 8px; border-radius:20px;}
+  .vcard h4{font-family:"Space Grotesk",sans-serif; font-size:16px; margin:0 0 6px;}
+  .vcard p{font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5;}
+
+  /* ---------- Reassure strip ---------- */
+  .strip{margin:36px 0 0; background:var(--ink); color:#DCE5E3; border-radius:14px; padding:22px 26px;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px;}
+  .strip .items{display:flex; flex-wrap:wrap; gap:8px 26px; font-size:12px;}
+  .strip .items span{position:relative; padding-left:18px; color:#B9C6C3;}
+  .strip .items span::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%; background:var(--sun);}
+  .strip .note{font-size:12.5px; color:#E8EEEC; max-width:40ch;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:34px 0 46px; text-align:center;}
+  footer p{font-size:12px; color:var(--ink-soft); margin:6px 0;}
+  footer a{color:var(--teal); text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr; gap:34px;}
+    .lede{max-width:46ch;}
+    .grid4{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:540px){
+    .hero{padding:44px 0 28px;}
+    .grid4{grid-template-columns:1fr;}
+    .strip{flex-direction:column; align-items:flex-start;}
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} .btn{transition:none;} }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow mono">Buletin pentru instalatori fotovoltaici</p>
+      <div class="hero-grid">
+        <div>
+          <h1>Ce se schimbă în <span class="accent">fotovoltaic</span>, direct în inbox.</h1>
+          <p class="lede">Buletin scurt pentru instalatorii autorizați: programe de finanțare, reglementări ANRE și mișcările din piață — fără să pierzi timp căutând.</p>
+          <div class="chips mono">
+            <span>Casa Verde &amp; Electric Up</span>
+            <span>Reglementări ANRE</span>
+            <span>Prețuri panouri &amp; baterii</span>
+          </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="card">
+          <form id="subForm" action="#" method="post" novalidate>
+            <h2>Abonează-te gratuit</h2>
+            <p class="sub">O dată la două săptămâni. Fără spam.</p>
+
+            <div class="field">
+              <label for="email" class="mono">Email de business</label>
+              <input type="email" id="email" name="email" placeholder="nume@firma.ro" required autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="nume" class="mono">Nume <span class="opt">(opțional)</span></label>
+              <input type="text" id="nume" name="nume" placeholder="Numele tău" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="judet" class="mono">Județ <span class="opt">(opțional)</span></label>
+              <select id="judet" name="judet">
+                <option value="">Toată țara</option>
+                <option>Alba</option><option>Arad</option><option>Argeș</option><option>Bacău</option>
+                <option>Bihor</option><option>Bistrița-Năsăud</option><option>Botoșani</option><option>Brașov</option>
+                <option>Brăila</option><option>Buzău</option><option>Caraș-Severin</option><option>Călărași</option>
+                <option>Cluj</option><option>Constanța</option><option>Covasna</option><option>Dâmbovița</option>
+                <option>Dolj</option><option>Galați</option><option>Giurgiu</option><option>Gorj</option>
+                <option>Harghita</option><option>Hunedoara</option><option>Ialomița</option><option>Iași</option>
+                <option>Ilfov</option><option>Maramureș</option><option>Mehedinți</option><option>Mureș</option>
+                <option>Neamț</option><option>Olt</option><option>Prahova</option><option>Satu Mare</option>
+                <option>Sălaj</option><option>Sibiu</option><option>Suceava</option><option>Teleorman</option>
+                <option>Timiș</option><option>Tulcea</option><option>Vaslui</option><option>Vâlcea</option>
+                <option>Vrancea</option><option>București</option>
+              </select>
+            </div>
+
+            <!-- Consimțământ: NEBIFAT implicit (obligatoriu pentru consimțământ valid) -->
+            <label class="consent" for="consent">
+              <input type="checkbox" id="consent" name="consent" required />
+              <span>Sunt de acord să primesc buletinul <strong>[Firma ta]</strong> cu noutăți despre finanțare, reglementări ANRE și piața fotovoltaică. Am citit <a href="#politica">Politica de confidențialitate</a>. Mă pot dezabona oricând.</span>
+            </label>
+
+            <button type="submit" class="btn">Mă abonez</button>
+            <p class="formerr" id="formErr">Completează un email valid și bifează acordul ca să continui.</p>
+            <p class="micro">Primești un email de confirmare — dă click pe link ca să activezi abonarea. Așa ne asigurăm că scriem doar celor care chiar vor.</p>
+          </form>
+
+          <!-- Success (double opt-in) -->
+          <div class="done" id="done">
+            <div class="mark" aria-hidden="true">✓</div>
+            <h2>Verifică-ți emailul</h2>
+            <p>Ți-am trimis un link de confirmare. Dă click pe el și ești pe listă. (Uită-te și în Spam/Promoții, pentru siguranță.)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="value">
+      <div class="wrap">
+        <div class="value-head">
+          <span class="k mono">Ce primești</span>
+          <h3>Patru lucruri, o dată la două săptămâni</h3>
+        </div>
+        <div class="grid4">
+          <article class="vcard">
+            <span class="tag mono">Programe</span>
+            <h4>Finanțare, la timp</h4>
+            <p>Deadline-uri și ghiduri pentru Casa Verde, Electric Up și programul AFM de stocare — pe scurt, nu în 40 de pagini.</p>
+          </article>
+          <article class="vcard">
+            <span class="tag mono">ANRE</span>
+            <h4>Reguli, fără bătăi de cap</h4>
+            <p>Ce se schimbă în reglementări, atestate și statutul de prosumator — și ce înseamnă pentru lucrările tale.</p>
+          </article>
+          <article class="vcard">
+            <span class="tag mono">Piață</span>
+            <h4>Prețuri și cerere</h4>
+            <p>Evoluția prețurilor la panouri, invertoare și baterii, plus unde crește cererea în țară.</p>
+          </article>
+          <article class="vcard">
+            <span class="tag mono">Tehnic</span>
+            <h4>Din teren</h4>
+            <p>Soluții, studii de caz și greșeli de evitat la montaj și la punerea în funcțiune.</p>
+          </article>
+        </div>
+
+        <div class="strip">
+          <div class="items mono">
+            <span>La două săptămâni</span>
+            <span>Fără spam</span>
+            <span>Dezabonare dintr-un click</span>
+          </div>
+          <p class="note">Trimitem doar celor care s-au abonat <em>și</em> au confirmat prin email. Fără liste cumpărate.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>© <span id="yr"></span> [Firma ta] · <a href="#politica">Politica de confidențialitate</a></p>
+      <p>Te-ai abonat din greșeală? <a href="#dezabonare">Dezabonează-te aici</a>.</p>
+    </div>
+  </footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Validare + previzualizarea stării de confirmare (double opt-in).
+  // ÎNLOCUIEȘTE cu integrarea platformei tale de email (Brevo/MailerLite/etc.),
+  // care trimite efectiv emailul de confirmare.
+  var form = document.getElementById('subForm');
+  var err = document.getElementById('formErr');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('email');
+    var consent = document.getElementById('consent');
+    var okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    if(!okEmail || !consent.checked){
+      err.style.display = 'block';
+      (!okEmail ? email : consent).focus();
+      return;
+    }
+    err.style.display = 'none';
+    // TODO: aici trimiți datele către platforma ta de email.
+    form.style.display = 'none';
+    document.getElementById('done').style.display = 'block';
+  });
+</script>
+</body>
+</html>
