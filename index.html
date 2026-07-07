@@ -20,6 +20,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<!-- Google Analytics 4 — înlocuiește G-XXXXXXXXXX cu ID-ul tău de măsurare, apoi decomentează:
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {'anonymize_ip': true});
+</script>
+-->
 <style>
   :root{
     --bg:#EFF3F7; --surface:#FFFFFF; --ink:#00284D; --ink-soft:#3D5A75;
@@ -288,10 +297,10 @@
       <div class="wrap">
         <div class="value-head">
           <span class="k mono">Gratuit</span>
-          <h3>Calculator invertor + baterie · Sigenergy &amp; Huawei</h3>
+          <h3>Calculator invertor + baterie</h3>
         </div>
         <div class="calc-card">
-          <div class="steps"><i class="on" id="st1"></i><i id="st2"></i><i id="st3"></i></div>
+          <div class="steps"><i class="on" id="st1"></i><i id="st2"></i><i id="st3"></i><i id="st4"></i></div>
 
           <!-- Pas 1: consum -->
           <div class="cstep on" id="cs1">
@@ -329,11 +338,22 @@
             <button type="button" class="copt" data-a="12">12 ore<small>Seara + noaptea</small></button>
             <button type="button" class="copt" data-a="24">24 de ore<small>Autonomie completă o zi</small></button>
             <p class="cerr" id="cerr3">Alege o variantă ca să continui.</p>
-            <div class="calc-nav"><button type="button" class="btn-back" id="cback3">Înapoi</button><button type="button" class="btn" id="ccalc">Calculează</button></div>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback3">Înapoi</button><button type="button" class="btn" id="cnext3">Continuă</button></div>
+          </div>
+
+          <!-- Pas 4: brand -->
+          <div class="cstep" id="cs4">
+            <h4>Ai o preferință de echipamente?</h4>
+            <p class="sub">Lucrăm cu ambele branduri — alege sau lasă-ne pe noi să recomandăm.</p>
+            <button type="button" class="copt" data-b="sig">Sigenergy<small>SigenStor — sistem all-in-one cu baterie stivuibilă</small></button>
+            <button type="button" class="copt" data-b="hua">Huawei<small>SUN2000 + baterie LUNA2000</small></button>
+            <button type="button" class="copt" data-b="any">Nu am preferință<small>Recomandați voi varianta potrivită</small></button>
+            <p class="cerr" id="cerr3b">Alege o variantă ca să continui.</p>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback4">Înapoi</button><button type="button" class="btn" id="ccalc">Calculează</button></div>
           </div>
 
           <!-- Pre-rezultat + email -->
-          <div class="cstep" id="cs4">
+          <div class="cstep" id="cs5">
             <h4>Rezultatul tău preliminar</h4>
             <p class="sub">Pe baza consumului și a locuinței tale:</p>
             <div class="bigres"><div class="n" id="resinv">— kW</div><div class="l" id="resinvsub">invertor hibrid recomandat · Sigenergy sau Huawei</div></div>
@@ -348,11 +368,11 @@
               <span>Sunt de acord să primesc raportul și buletinul <strong>HYTECH</strong> cu noutăți și oferte pentru parteneri. <a href="#politica">Politica de confidențialitate</a>. Mă pot dezabona oricând.</span>
             </label>
             <p class="cerr" id="cerr4">Completează un email valid și bifează acordul.</p>
-            <div class="calc-nav"><button type="button" class="btn-back" id="cback4">Înapoi</button><button type="button" class="btn" id="csend">Trimite-mi raportul complet</button></div>
+            <div class="calc-nav"><button type="button" class="btn-back" id="cback5">Înapoi</button><button type="button" class="btn" id="csend">Trimite-mi raportul complet</button></div>
           </div>
 
           <!-- Confirmare -->
-          <div class="cstep" id="cs5">
+          <div class="cstep" id="cs6">
             <div class="done" style="display:block;">
               <div class="mark" aria-hidden="true">✓</div>
               <h2>Raportul e pe drum</h2>
@@ -399,12 +419,17 @@
   });
 
   /* ---------- Calculator energie ---------- */
-  var calc = {kwh:0, home:'', aut:-1};
+  var calc = {kwh:0, home:'', aut:-1, brand:''};
   var caps = {ap:3, mica:6, medie:10, mare:20};
 
+  // Tracking pași (GA4). Înlocuiește G-XXXXXXXXXX în <head> ca să activezi.
+  function track(ev, params){
+    if(typeof gtag === 'function'){ gtag('event', ev, params||{}); }
+  }
+
   function cshow(n){
-    for(var i=1;i<=5;i++){ document.getElementById('cs'+i).classList.toggle('on', i===n); }
-    for(var j=1;j<=3;j++){ var d=document.getElementById('st'+j); if(d) d.classList.toggle('on', j<=Math.min(n,3)); }
+    for(var i=1;i<=6;i++){ document.getElementById('cs'+i).classList.toggle('on', i===n); }
+    for(var j=1;j<=4;j++){ var d=document.getElementById('st'+j); if(d) d.classList.toggle('on', j<=Math.min(n,4)); }
   }
   function cerr(id, show){ document.getElementById(id).style.display = show?'block':'none'; }
 
@@ -416,6 +441,7 @@
     var v = parseFloat(document.getElementById('ckwh').value);
     if(!v || v<30 || v>20000){ cerr('cerr1', true); return; }
     calc.kwh = v; cerr('cerr1', false); cshow(2);
+    track('calc_pas1_consum', {kwh: v});
   });
 
   // Pas 2 și 3: selecție opțiuni
@@ -429,16 +455,24 @@
   }
   pick('#cs2','h',function(v){ calc.home = v; });
   pick('#cs3','a',function(v){ calc.aut = parseFloat(v); });
+  pick('#cs4','b',function(v){ calc.brand = v; });
 
   document.getElementById('cback2').addEventListener('click', function(){ cshow(1); });
   document.getElementById('cnext2').addEventListener('click', function(){
     if(!calc.home){ cerr('cerr2', true); return; }
     cerr('cerr2', false); cshow(3);
+    track('calc_pas2_locuinta', {locuinta: calc.home});
   });
   document.getElementById('cback3').addEventListener('click', function(){ cshow(2); });
-  document.getElementById('ccalc').addEventListener('click', function(){
+  document.getElementById('cnext3').addEventListener('click', function(){
     if(calc.aut<0){ cerr('cerr3', true); return; }
-    cerr('cerr3', false);
+    cerr('cerr3', false); cshow(4);
+    track('calc_pas3_autonomie', {autonomie_ore: calc.aut});
+  });
+  document.getElementById('cback4').addEventListener('click', function(){ cshow(3); });
+  document.getElementById('ccalc').addEventListener('click', function(){
+    if(!calc.brand){ cerr('cerr3b', true); return; }
+    cerr('cerr3b', false);
     // Dimensionare orientativă: ~100 kWh/lună per kWp instalat (medie RO)
     var kwp = Math.min(caps[calc.home], Math.max(1.5, Math.round(calc.kwh/100*2)/2));
     var panels = Math.ceil(kwp*1000/440);
@@ -457,20 +491,25 @@
     // Baterii: Sigenergy module ~8 kWh stivuibile; Huawei LUNA2000 S1 module 6,9 kWh
     var sigMod = batt===0?0:Math.ceil(batt/8);
     var huaMod = batt===0?0:Math.min(3, Math.ceil(batt/6.9));
+    var sigBat = 'SigenStor '+sigMod+'×8 kWh';
+    var huaBat = 'LUNA2000 '+String(Math.round(huaMod*6.9*10)/10).replace('.',',')+' kWh';
+    var brandTxt = calc.brand==='sig' ? 'Sigenergy' : (calc.brand==='hua' ? 'Huawei' : 'Sigenergy sau Huawei');
+    var modTxt = calc.brand==='sig' ? sigModel : (calc.brand==='hua' ? huaModel : sigModel+' / '+huaModel);
     var batTxt = batt===0 ? '—' :
-      'SigenStor '+sigMod+'×8 kWh sau LUNA2000 '+String(Math.round(huaMod*6.9*10)/10).replace('.',',')+' kWh';
+      (calc.brand==='sig' ? sigBat : (calc.brand==='hua' ? huaBat : sigBat+' sau '+huaBat));
 
-    calc.res = {kwp:kwp, panels:panels, batt:batt, prod:prod, save:save,
+    calc.res = {kwp:kwp, panels:panels, batt:batt, prod:prod, save:save, brand:calc.brand,
                 phase:phase, inv:inv, sig:sigModel, hua:huaModel, sigMod:sigMod, huaMod:huaMod};
     document.getElementById('resinv').textContent = '~'+inv+' kW';
-    document.getElementById('resinvsub').textContent = 'invertor hibrid '+(phase===3?'trifazat':'monofazat')+' · Sigenergy sau Huawei — modelul exact în raport';
+    document.getElementById('resinvsub').textContent = 'invertor hibrid '+(phase===3?'trifazat':'monofazat')+' · '+brandTxt+' — modelul exact în raport';
     document.getElementById('respv').textContent = 'Sistem PV orientativ: ~'+String(kwp).replace('.',',')+' kWp (~'+panels+' panouri)';
-    document.getElementById('resmod').textContent = sigModel+' / '+huaModel;
+    document.getElementById('resmod').textContent = modTxt;
     document.getElementById('resbat').textContent = batTxt;
     document.getElementById('ressave').textContent = save.toLocaleString('ro-RO')+' lei/an';
-    cshow(4);
+    cshow(5);
+    track('calc_pas4_rezultat', {brand: calc.brand, invertor_kw: inv, fazare: phase});
   });
-  document.getElementById('cback4').addEventListener('click', function(){ cshow(3); });
+  document.getElementById('cback5').addEventListener('click', function(){ cshow(4); });
 
   // Email + consimțământ
   document.getElementById('csend').addEventListener('click', function(){
@@ -480,8 +519,9 @@
     if(!ok || !cons){ cerr('cerr4', true); return; }
     cerr('cerr4', false);
     // TODO: trimite {email: em, consum: calc.kwh, locuinta: calc.home, autonomie: calc.aut,
-    //        rezultat: calc.res} către platforma de email (Brevo) — listă + atribut CALCULATOR.
-    cshow(5);
+    //        brand: calc.brand, rezultat: calc.res} către platforma de email (Brevo) — listă + atribut CALCULATOR.
+    cshow(6);
+    track('calc_lead_email', {brand: calc.brand});
   });
 </script>
 </body>
